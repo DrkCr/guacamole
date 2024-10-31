@@ -7,7 +7,7 @@
 #######################################################################################################################
 
 # To install the latest code snapshot:
-# wget https://raw.githubusercontent.com/itiligent/Guacamole-Install/main/1-setup.sh && chmod +x 1-setup.sh && ./1-setup.sh
+# wget https://raw.githubusercontent.com/DrkCr/guacamole/main/1-setup.sh && chmod +x 1-setup.sh && ./1-setup.sh
 
 # 1-setup.sh is a central script that manages all inputs, options and sequences other included 'install' scripts.
 # 2-install-guacamole downloads Guacamole source and exectutes all Guacamole's build instructions.
@@ -83,7 +83,7 @@ mkdir -p $DOWNLOAD_DIR
 mkdir -p $DB_BACKUP_DIR
 
 # GitHub download branch
-GITHUB="https://raw.githubusercontent.com/itiligent/Guacamole-Install/main"
+GITHUB="https://raw.githubusercontent.com/DrkCr/guacamole/main"
 
 # Version of Guacamole to install
 GUAC_VERSION="1.5.5"
@@ -110,39 +110,39 @@ INSTALL_LOG="${DOWNLOAD_DIR}/guacamole_install.log"
 #######################################################################################################################
 # Silent setup options - true/false or specific values below will skip prompt at install. EDIT TO SUIT ################
 #######################################################################################################################
-SERVER_NAME=""                  # Server hostname (blank = use the current hostname)
-LOCAL_DOMAIN=""                 # Local DNS namespace/domain suffix (blank = keep the current suffix)
-INSTALL_MYSQL=""                # Install MySQL locally (true/false)
-SECURE_MYSQL=""                 # Apply mysql secure configuration tool (true/false)
-MYSQL_HOST=""                   # Blank "" = localhost MySQL install, adding a specific IP address will assume a remote MySQL instance
+SERVER_NAME="bastion"                  # Server hostname (blank = use the current hostname)
+LOCAL_DOMAIN="cfrplab.local"                 # Local DNS namespace/domain suffix (blank = keep the current suffix)
+INSTALL_MYSQL="true"                # Install MySQL locally (true/false)
+SECURE_MYSQL="true"                 # Apply mysql secure configuration tool (true/false)
+MYSQL_HOST="localhost"                   # Blank "" = localhost MySQL install, adding a specific IP address will assume a remote MySQL instance
 MYSQL_PORT=""                   # If blank "" default is 3306
 GUAC_DB=""                      # If blank "" default is guacamole_db
 GUAC_USER=""                    # If blank "" default is guacamole_user
-MYSQL_ROOT_PWD=""               # Manadatory entry here or at script prompt
-GUAC_PWD=""                     # Manadatory entry here or at script prompt
+MYSQL_ROOT_PWD=$GUAC_PWD               # Manadatory entry here or at script prompt
+GUAC_PWD=$GUAC_PWD                    # Manadatory entry here or at script prompt
 GUACD_ACCOUNT="guacd"           # Service account guacd will run under (and will be very heavily locked down)
 DB_TZ=$(cat /etc/timezone)      # Blank "" defaults to UTC, for local timezone: $(cat /etc/timezone)
-INSTALL_TOTP=""                 # Add TOTP MFA extension (true/false), can't be installed simultaneously with DUO)
-INSTALL_DUO=""                  # Add DUO MFA extension (true/false, can't be installed simultaneously with TOTP)
-INSTALL_LDAP=""                 # Add Active Directory extension (true/false)
-INSTALL_QCONNECT=""             # Add Guacamole console quick connect feature (true/false)
-INSTALL_HISTREC=""              # Add Guacamole history recording storage feature (true/false)
-HISTREC_PATH=""                 # If blank "" sets the Apache's default path of /var/lib/guacamole/recordings
-GUAC_URL_REDIR=""               # Auto redirect of host root URL http://xxx:8080 to http://xxx:8080/guacamole  (true/false)
-INSTALL_NGINX=""                # Install & configure Nginx reverse proxy http:80 frontend (true/false)
-PROXY_SITE=""                   # Local DNS name for reverse proxy site and/or self signed TLS certificates (blank "" defaults to $DEFAULT_FQDN)
-SELF_SIGN=""                    # Add self signed TLS/https support to Nginx (true/false, Let's Encrypt not available with this option)
+INSTALL_TOTP="false"                 # Add TOTP MFA extension (true/false), can't be installed simultaneously with DUO)
+INSTALL_DUO="false"                  # Add DUO MFA extension (true/false, can't be installed simultaneously with TOTP)
+INSTALL_LDAP="false"                 # Add Active Directory extension (true/false)
+INSTALL_QCONNECT="false"             # Add Guacamole console quick connect feature (true/false)
+INSTALL_HISTREC="true"              # Add Guacamole history recording storage feature (true/false)
+HISTREC_PATH="/var/lib/guacamole/recordings"                 # If blank "" sets the Apache's default path of /var/lib/guacamole/recordings
+GUAC_URL_REDIR="true"               # Auto redirect of host root URL http://xxx:8080 to http://xxx:8080/guacamole  (true/false)
+INSTALL_NGINX="true"                # Install & configure Nginx reverse proxy http:80 frontend (true/false)
+PROXY_SITE="bastion.cfrplab.local"                   # Local DNS name for reverse proxy site and/or self signed TLS certificates (blank "" defaults to $DEFAULT_FQDN)
+SELF_SIGN="true"                    # Add self signed TLS/https support to Nginx (true/false, Let's Encrypt not available with this option)
 RSA_KEYLENGTH="2048"            # Self signed RSA TLS key length. At least 2048, must not be blank
-CERT_COUNTRY="AU"               # Self signed cert setup, 2 character country code only, must not be blank
-CERT_STATE="Victoria"           # Self signed cert setup, must not be blank
-CERT_LOCATION="Melbourne"       # Self signed cert setup, must not be blank
-CERT_ORG="Itiligent"            # Self signed cert setup, must not be blank
-CERT_OU="I.T."                  # Self signed cert setup, must not be blank
-CERT_DAYS="3650"                # Self signed cert setup, days until self signed TLS cert expiry, blank = default 3650
-LETS_ENCRYPT=""                 # Add Lets Encrypt public TLS cert for Nginx (true/false, self signed TLS not available with this option) 
+CERT_COUNTRY="FR"               # Self signed cert setup, 2 character country code only, must not be blank
+CERT_STATE="IDF"           # Self signed cert setup, must not be blank
+CERT_LOCATION="PARIS"       # Self signed cert setup, must not be blank
+CERT_ORG="CFRP"            # Self signed cert setup, must not be blank
+CERT_OU="IT"                  # Self signed cert setup, must not be blank
+CERT_DAYS="365"                # Self signed cert setup, days until self signed TLS cert expiry, blank = default 3650
+LETS_ENCRYPT="false"                 # Add Lets Encrypt public TLS cert for Nginx (true/false, self signed TLS not available with this option) 
 LE_DNS_NAME=""                  # Public DNS name for use with Lets Encrypt certificates, must match public DNS
 LE_EMAIL=""                     # Webmaster email for Lets Encrypt notifications
-BACKUP_EMAIL=""                 # Email address to send MySQL backup notifications to
+BACKUP_EMAIL="none@none.com"                 # Email address to send MySQL backup notifications to
 BACKUP_RETENTION="30"           # Days to keep SQL backups locally
 RDP_SHARE_HOST=""               # Custom RDP host name shown in Windows Explorer (eg. "RDP_SHARE_LABEL on RDP_SHARE_HOST"). Blank "" = $SERVER_NAME
 RDP_SHARE_LABEL="RDP Share"     # Custom RDP shared drive name in Windows Explorer (eg. "RDP_SHARE_LABEL on RDP_SHARE_HOST" eg. "your RDP share name on server01"

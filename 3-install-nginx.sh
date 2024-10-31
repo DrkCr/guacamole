@@ -52,7 +52,7 @@ spinner() {
   printf "       "
   tput rc
 }
-apt-get update -qq &> /dev/null && apt-get install nginx -qq -y &>>${INSTALL_LOG} &
+apt-get install nginx -qq -y &>>${INSTALL_LOG} &
 command_pid=$!
 spinner $command_pid
 if [[ $? -ne 0 ]]; then
